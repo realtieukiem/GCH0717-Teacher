@@ -8,6 +8,8 @@ app.engine('hbs',engines.handlebars);
 app.set('views','./views');
 app.set('view engine','hbs');
 
+app.use(express.static(__dirname + '/public'));
+
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -19,6 +21,18 @@ var fileName = "user.txt"
 app.post('/doAdd',(req,res)=>{
     let name = req.body.txtName;
     let password = req.body.txtPassword;
+    let errorNameMessage = null;
+    let errorpasswordMessage =null
+    if(name.length <=3)
+        errorNameMessage = "name's length must > 3";
+    if(password.length <=6)
+        errorpasswordMessage = "password's length must >6";
+    if(errorNameMessage != null || errorpasswordMessage !=null)
+    {
+        let errorData = {username :errorNameMessage, password:errorpasswordMessage} 
+        res.render('index',{ error : errorData})
+        return;
+    }
     let user = name + ';' + password;
     fs.appendFileSync(fileName,'/' + user);
     //redirec user to Index

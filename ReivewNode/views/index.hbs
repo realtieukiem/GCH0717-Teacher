@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="mystyle.css">
+    <script src="myscript.js"></script>
 </head>
 <body>
+    <img src="maradona.png" width="200px" height="150px"/>
     <h1>Register Yourself</h1>
     <form action="/doAdd" method="post">
         Name <input type="text" name="txtName" id="">
-        <br>
+         <span class="errorMsg"> {{error.username}}</span> <br>
         Password <input type="text" name="txtPassword" id="">
+        <span class="errorMsg">{{error.password}}</span>
         <br>
-        <input type="submit" value="Register">
+        <input type="submit" onclick="jsDemo()" value="Register">
     </form>
     <br>
     <a href="/login">Login</a>
