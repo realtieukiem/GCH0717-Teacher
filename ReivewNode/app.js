@@ -21,15 +21,30 @@ var fileName = "user.txt"
 app.post('/doAdd',(req,res)=>{
     let name = req.body.txtName;
     let password = req.body.txtPassword;
+    let date = req.body.eventdate;
+    let gender = req.body.gender;
+
     let errorNameMessage = null;
     let errorpasswordMessage =null
+    let errorDateMessage =null;
+    let errorGenderMessage =null;
+    if(date.length <=0)
+        errorDateMessage = 'Input a date';
+    if(gender==null)
+        errorGenderMessage = "Select a gender";
     if(name.length <=3)
         errorNameMessage = "name's length must > 3";
     if(password.length <=6)
         errorpasswordMessage = "password's length must >6";
-    if(errorNameMessage != null || errorpasswordMessage !=null)
+    if(errorNameMessage != null || errorpasswordMessage !=null
+        || errorDateMessage !=null || errorGenderMessage !=null )
     {
-        let errorData = {username :errorNameMessage, password:errorpasswordMessage} 
+        let errorData = {username :errorNameMessage, 
+            password:errorpasswordMessage,
+            gender : errorGenderMessage,
+            date : errorDateMessage
+        
+        } 
         res.render('index',{ error : errorData})
         return;
     }

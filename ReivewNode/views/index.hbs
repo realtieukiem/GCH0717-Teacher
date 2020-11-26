@@ -16,7 +16,16 @@
         Password <input type="text" name="txtPassword" id="">
         <span class="errorMsg">{{error.password}}</span>
         <br>
-        <input type="submit" onclick="jsDemo()" value="Register">
+        Gender
+        <input type="radio" name="gender" value="Male"> Male
+        <input type="radio" name="gender" value="Female">Female
+        <span class="errorMsg">{{error.gender}}</span>
+        <br>
+        Date
+        <input type="date" name="eventdate" id="">
+        <span class="errorMsg">{{error.date}}</span>
+        <br>
+        <input type="submit" value="Register">
     </form>
     <br>
     <a href="/login">Login</a>
