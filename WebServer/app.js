@@ -1,89 +1,70 @@
-var express = require('express')
+//npm install express handlebars consolidate --save
+
+var express = require('express');
 var app = express();
-var path = require('path')
+var path = require('path');
 
-//npm i handlebars consolidate --save
-const engines = require('consolidate');
-app.engine('hbs',engines.handlebars);
-app.set('views','./views');
-app.set('view engine','hbs');
+//npm install handlebars consolidate --save
+const engine = require('consolidate');
+app.engine('hbs', engine.handlebars);
+app.set('views', './views');
+app.set('view engine', 'hbs');
 
-//allow to read data from textbox(one time only)
-//cho phep doc du lieu tu Texbox
+app.use(express.static(__dirname + '/public'))
+
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.get('/', (req, res) => {
+    res.render('index');
+});
 
-app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname) +  '/index.html');
-})
-app.get('/animal',(req,res)=>{
-    res.sendFile(path.join(__dirname) +  '/animal.html');
-})
+fs = require('fs');
+var fileName = 'user.txt';
 
-app.get('/product',(req,res)=>{
-    res.render('addProduct.hbs');
-})
-var productFile = "Product.txt";
-app.post('/doAddProduct',(req,res)=>{
+app.post('/doAdd', (req, res) => {
     let name = req.body.txtName;
-    let price = req.body.txtPrice;
-    let product = name + ';' + price;
-    fs.appendFileSync(productFile,'/'+ product);
-    //go to homepage
+    let password = req.body.txtPassword;
+    let errorNameMessage = null;
+    let errorPasswordMessage = null;
+    if (name.length <= 3) {
+        errorNameMessage = "name's length must over 3 words"
+    }
+    if (password.length <= 6) {
+        errorPasswordMessage = "password's length must over 6 words";
+    }
+    if (errorNameMessage != null || errorPasswordMessage != null) {
+        let errorData = { username: errorNameMessage, password: errorPasswordMessage }
+        res.render('index', { error: errorData })
+        return;
+    }
+
+    let user = name + ';' + password;
+    fs.appendFileSync(fileName, '/' + user);
     res.redirect('/');
+});
 
-})
-
-var fs = require('fs')
-var fileName = 'data.txt';
-
-app.get('/viewAll',(req,res)=>{
-    // res.write('<html>');
-    // res.write('<body>')
-    // res.write('<ul>')
-    // data = fs.readFileSync(fileName,'utf8');
-    // var animals = data.split(';');
-    // animals.shift();//remove the first element
-    // animals.forEach(element => {
-    //     res.write('<li>'+ element + '</li>')
-    // });
-    // res.write('</ul>')
-    // res.write('</body>')
-    // res.write('</html>');
-    data = fs.readFileSync(fileName,'utf8');
-    var animals = data.split(';');
-    animals.shift();//remove the first element
-    res.render('animals',{model:animals})
-
-})
-
-app.post('/addAnimal',(req,res)=>{
-    var name = req.body.animalName;
-    fs.appendFileSync(fileName,';'+name);
-    //go to homepage
-    res.redirect('/');
-})
-
-
-app.get('/viewP',(req,res)=>{
-    let data = fs.readFileSync(productFile,"utf8");
-    let products = data.split('/');
-    products.shift();
-    console.debug(products)
-    let model = [];
-    products.forEach(element => {
-        let info = element.split(';');
-        let p2 = {
-            'name' : info[0],
-            'price' : info[1]
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+app.post('/doLogin', (req, res) => {
+    let name = req.body.txtName;
+    let password = req.body.txtPassword;
+    let textFile = fs.readFileSync(fileName, "utf8");
+    user = textFile.split('/');
+    //move the first element because it is empty
+    user.shift();
+    user.forEach(element => {
+        nameF = element.split(';')[0];
+        passF = element.split(';')[1];
+        if (name == nameF && password == passF) {
+            res.end("Valid user !");
+            return;
         }
-        model.push(p2);
     });
-    console.debug(model)
-    res.render('viewAll',{data:model});
+    res.end("Invalid user !");
 })
 
 var PORT = process.env.PORT || 3000;
 app.listen(PORT);
-console.debug('Server is running on port: ' + PORT);
+console.log('Sever is running at PORT ' + PORT);
