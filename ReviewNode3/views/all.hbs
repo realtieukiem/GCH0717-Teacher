@@ -15,6 +15,7 @@
                 <th>Name</th>
                 <th>City</th>
                 <th>Delete</th>
+                <th>Edit</th>
             </tr>
         </thead>     
         {{#each data}}
@@ -22,6 +23,7 @@
             <td>{{name}}</td>
             <td>{{city}}</td>
             <td><a href="/delete?name={{name}}">Delete {{name}}</a></td>
+            <td><a href="/edit?name={{name}}">Edit</a></td>
         </tr>
         {{/each}}
     </table>
